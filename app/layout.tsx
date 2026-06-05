@@ -2,18 +2,18 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-    title: 'Artfix | Portal Comercial 2026',
-    description: 'Portal Comercial Artfix - PWR Gestão',
+  title: 'Artfix | Portal Comercial 2026',
+  description: 'Portal Comercial Artfix - PWR Gestao',
 }
 
 export default function RootLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) {
-    return (
-          <html lang="pt-BR">
-                <body>{children}</body>body>
-          </html>html>
-        )
-}</html>
+  return (
+    <html lang="pt-BR">
+      <body>{children}</body>
+    </html>
+  )
+}
