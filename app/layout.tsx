@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Artfix | Portal Comercial 2026',
@@ -13,7 +12,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body style={{ margin: 0, padding: 0, overflow: 'hidden' }}>{children}</body>
     </html>
   )
 }
