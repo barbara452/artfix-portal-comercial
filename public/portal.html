@@ -423,7 +423,334 @@ function openImportModal(){document.getElementById('importModal').classList.add(
 function closeImportModal(){document.getElementById('importModal').classList.remove('open');}
 document.getElementById('importModal').addEventListener('click',e=>{if(e.target===document.getElementById('importModal'))closeImportModal();});
 function handleDrop(e){e.preventDefault();document.getElementById('dropZone').classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)handleFileSelect(f);}
-function handleFileSelect(file){if(!file)return;if(!file.name.match(/\.(csv|txt)$/i)){showImportResult('err','❌ Formato inválido. Envie um arquivo .csv exportado do RD Station.');return;}const prog=document.getElementById('importProgress'),fill=document.getElementById('importProgFill'),txt=document.getElementById('importProgressText');prog.style.display='block';fill.style.width='0%';txt.textContent='Lendo arquivo...';const reader=new FileReader();reader.onload=function(ev){fill.style.width='40%';txt.textContent='Processando registros...';setTimeout(()=>{try{const lines=ev.target.result.split(/\r?\n/).filter(l=>l.trim());const total=Math.max(0,lines.length-1);fill.style.width='80%';txt.textContent='Finalizando...';setTimeout(()=>{fill.style.width='100%';const today=new Date();const d=String(today.getDate()).padStart(2,'0'),m=String(today.getMonth()+1).padStart(2,'0'),y=today.getFullYear();document.getElementById('badge-base').textContent='Base: '+d+'/'+m+'/'+y;document.getElementById('badge-entradas').textContent=total.toLocaleString('pt-BR')+' entradas · '+y;showImportResult('ok','✅ Base importada com sucesso! '+total.toLocaleString('pt-BR')+' registros carregados em '+d+'/'+m+'/'+y+'.');prog.style.display='none';},500);}catch(e){showImportResult('err','❌ Erro ao processar o arquivo.');prog.style.display='none';}},600);};reader.onerror=()=>{showImportResult('err','❌ Erro ao ler o arquivo.');prog.style.display='none';};reader.readAsText(file,'UTF-8');}
+function handleFileSelect(e){
+  const file = e.target ? e.target.files[0] : e;
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const rows = parseCSV(ev.target.result);
+      if(rows.length < 2){ showImportResult('error','CSV vazio ou inválido.'); return; }
+      const prog = document.getElementById('importProgress');
+      if(prog) prog.style.display='block';
+      const fill = document.getElementById('importProgFill');
+      const txt = document.getElementById('importProgressText');
+      let p=0;
+      const steps=[20,40,60,80,100];
+      const interval=setInterval(()=>{
+        p=steps.shift()||100;
+        if(fill) fill.style.width=p+'%';
+        if(txt) txt.textContent='Processando... '+p+'%';
+        if(steps.length===0){
+          clearInterval(interval);
+          const result = processDashboardData(rows, file.name);
+          if(result.ok){
+            showImportResult('success', result.msg);
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2,'0');
+            const m2 = String(now.getMonth()+1).padStart(2,'0');
+            const y = now.getFullYear();
+            const el1 = document.getElementById('badge-base');
+            const el2 = document.getElementById('badge-entradas');
+            if(el1) el1.textContent = 'Base: '+d+'/'+m2+'/'+y;
+            if(el2) el2.textContent = result.total.toLocaleString('pt-BR')+' entradas · '+y;
+          } else {
+            showImportResult('error', result.msg);
+          }
+        }
+      },150);
+    } catch(err){
+      showImportResult('error','Erro ao processar arquivo: '+err.message);
+    }
+  };
+  reader.readAsText(file,'UTF-8');
+}
+function parseCSV(text){
+  const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
+  const result = [];
+  for(let i=0;i<lines.length;i++){
+    const line = lines[i].trim();
+    if(!line) continue;
+    const row = [];
+    let inQ=false, cell='';
+    for(let j=0;j<line.length;j++){
+      const ch=line[j];
+      if(ch==='"'){
+        if(inQ && line[j+1]==='"'){ cell+='"'; j++; }
+        else inQ=!inQ;
+      } else if((ch===','||ch===';') && !inQ){
+        row.push(cell.trim()); cell='';
+      } else { cell+=ch; }
+    }
+    row.push(cell.trim());
+    result.push(row);
+  }
+  return result;
+}
+function colMap(headers){
+  const map={};
+  const patterns={
+    nome:[/nome.*neg|t.tulo.*neg|deal.*name|negocio/i],
+    empresa:[/empresa|company|cliente/i],
+    valor:[/valor|value|montante|amount/i],
+    etapa:[/etapa|fase|stage|funil/i],
+    resp:[/respons.vel|owner|dono|vendedor/i],
+    produto:[/produto|product|servico|categoria/i],
+    fonte:[/origem|fonte|source/i],
+    fechamento:[/fechamento|close.*date|previsao/i],
+    status:[/status|situacao/i],
+    mes:[/m.s.*fechamento|month|competencia/i]
+  };
+  headers.forEach((h,i)=>{
+    const hn=h.toLowerCase().trim();
+    Object.entries(patterns).forEach(([key,pats])=>{
+      if(map[key]===undefined && pats.some(p=>p.test(hn))) map[key]=i;
+    });
+  });
+  return map;
+}
+function processDashboardData(rows, filename){
+  const headers = rows[0];
+  const data = rows.slice(1).filter(r=>r.some(c=>c.trim()));
+  if(data.length===0) return {ok:false,msg:'Nenhum dado encontrado no CSV.'};
+  const cm = colMap(headers);
+  
+  const MESES=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const VENDEDORES=['Graziele Silva','Luane Sol','Mayara Hedlund','Debora Moura','Maria Bueno'];
+  const PRODUTOS=['PDV','Ambientação Corp.','Frota','Proj. Especiais','Outros'];
+  const FONTES=['Cliente Ativo','SDR Artfix','Não Classificado','Parceiros','WhatsApp/E-mail'];
+
+  function getVal(row,key){ return cm[key]!==undefined ? (row[cm[key]]||'').trim() : ''; }
+  function parseValor(v){ 
+    if(!v) return 0;
+    v=v.replace(/[R$\s]/g,'').replace(/\.(?=\d{3})/g,'').replace(',','.');
+    return parseFloat(v)||0;
+  }
+  function parseDate(d){
+    if(!d) return null;
+    const m1=d.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+    if(m1){ const y=m1[3].length===2?'20'+m1[3]:m1[3]; return new Date(y,parseInt(m1[2])-1,parseInt(m1[1])); }
+    const m2=d.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if(m2) return new Date(m2[1],parseInt(m2[2])-1,parseInt(m2[3]));
+    return null;
+  }
+
+  // Aggregate data
+  const receitaMes=[0,0,0,0,0,0,0,0,0,0,0,0];
+  const fechMes=[0,0,0,0,0,0,0,0,0,0,0,0];
+  const receitaProd={};
+  const receitaVend={};
+  const receitaFonte={};
+  const receitaMesProd={};
+  const receitaMesVend={};
+  const clienteReceita={};
+  let totalPipe=0, countPipe=0, urgente=0, urgenteVal=0, vencido=0, vencidoVal=0, proximo=0, proximoVal=0, semData=0, semDataVal=0;
+  const pipeRows=[];
+  const hoje = new Date();
+
+  data.forEach(row=>{
+    const valorStr=getVal(row,'valor');
+    const valor=parseValor(valorStr);
+    const etapa=getVal(row,'etapa').toLowerCase();
+    const status=getVal(row,'status').toLowerCase();
+    const resp=getVal(row,'resp')||'N/A';
+    const produto=getVal(row,'produto')||'Outros';
+    const fonte=getVal(row,'fonte')||'Não Classificado';
+    const fechStr=getVal(row,'fechamento');
+    const fech=parseDate(fechStr);
+    const nome=getVal(row,'nome')||'(sem nome)';
+    const empresa=getVal(row,'empresa')||'';
+    const isWon=/(ganho|won|fechado|vendido)/i.test(status)||/(ganho|won|fechado|vendido)/i.test(etapa);
+    const isLost=/(perdido|lost|cancelado)/i.test(status)||/(perdido|lost|cancelado)/i.test(etapa);
+    const isOpen=!isLost;
+
+    // Revenue by month (won deals)
+    if(isWon && valor>0 && fech){
+      const mo=fech.getMonth();
+      receitaMes[mo]+=valor;
+      fechMes[mo]++;
+      // Product
+      const prodKey=PRODUTOS.find(p=>produto.toLowerCase().includes(p.toLowerCase().substring(0,4)))||'Outros';
+      receitaProd[prodKey]=(receitaProd[prodKey]||0)+valor;
+      if(!receitaMesProd[prodKey]) receitaMesProd[prodKey]=[0,0,0,0,0,0,0,0,0,0,0,0];
+      receitaMesProd[prodKey][mo]+=valor;
+      // Vendedor
+      const vendKey=VENDEDORES.find(v=>resp.toLowerCase().includes(v.split(' ')[0].toLowerCase()))||resp;
+      if(!receitaMesVend[vendKey]) receitaMesVend[vendKey]=[0,0,0,0,0,0,0,0,0,0,0,0];
+      receitaMesVend[vendKey][mo]+=valor;
+      receitaVend[vendKey]=(receitaVend[vendKey]||0)+valor;
+      // Fonte
+      const fonteKey=FONTES.find(f=>fonte.toLowerCase().includes(f.split(' ')[0].toLowerCase()))||'Não Classificado';
+      receitaFonte[fonteKey]=(receitaFonte[fonteKey]||0)+1;
+      // Cliente ABC
+      const clienteKey=empresa||nome;
+      clienteReceita[clienteKey]=(clienteReceita[clienteKey]||0)+valor;
+    }
+
+    // Pipeline (open deals)
+    if(isOpen && !isLost && valor>0){
+      totalPipe+=valor; countPipe++;
+      let urgTag='Normal';
+      if(!fech){ semData++; semDataVal+=valor; urgTag='Sem data'; }
+      else {
+        const diff=(fech-hoje)/(1000*60*60*24);
+        if(diff<0){ vencido++; vencidoVal+=valor; urgTag='Vencido'; }
+        else if(diff<=14){ urgente++; urgenteVal+=valor; urgTag='≤14d'; }
+        else if(diff<=30){ proximo++; proximoVal+=valor; urgTag='15–30d'; }
+        else urgTag='Normal';
+      }
+      pipeRows.push({nome,empresa,valor,resp,produto,fech,fechStr,status:getVal(row,'status')||getVal(row,'etapa'),urgTag});
+    }
+  });
+
+  // Update charts
+  const instances=Object.values(Chart.instances);
+  function getChart(id){ return instances.find(c=>c.canvas&&c.canvas.id===id); }
+
+  // Months with data
+  const hasMes=receitaMes.some(v=>v>0);
+  const activeMonths=hasMes?MESES.filter((m,i)=>receitaMes[i]>0||i<= new Date().getMonth()):MESES.slice(0,5);
+  const moIndices=activeMonths.map(m=>MESES.indexOf(m));
+
+  // cReceita - receita por mês
+  const cR=getChart('cReceita');
+  if(cR && hasMes){
+    const recData=moIndices.map(i=>receitaMes[i]);
+    const fechData=moIndices.map(i=>fechMes[i]);
+    const totalReceita=receitaMes.reduce((a,b)=>a+b,0);
+    const numMeses=moIndices.length||1;
+    const mediaAnual=totalReceita/12;
+    const metaData=moIndices.map(()=>Math.round(mediaAnual*1.15)||2300000);
+    cR.data.labels=activeMonths;
+    cR.data.datasets[0].data=recData;
+    if(cR.data.datasets[1]) cR.data.datasets[1].data=metaData;
+    if(cR.data.datasets[2]) cR.data.datasets[2].data=fechData;
+    cR.update();
+  }
+
+  // cTicket - ticket médio
+  const cT=getChart('cTicket');
+  if(cT && hasMes){
+    const tickData=moIndices.map(i=>fechMes[i]>0?Math.round(receitaMes[i]/fechMes[i]):0);
+    cT.data.labels=activeMonths;
+    cT.data.datasets[0].data=tickData;
+    cT.update();
+  }
+
+  // cProdMix - mix de produtos
+  const cPM=getChart('cProdMix');
+  if(cPM){
+    const prodKeys=PRODUTOS;
+    const prodVals=prodKeys.map(p=>receitaProd[p]||0);
+    if(prodVals.some(v=>v>0)){
+      cPM.data.labels=prodKeys;
+      cPM.data.datasets[0].data=prodVals;
+      cPM.update();
+    }
+  }
+
+  // cProdMes - produto por mês
+  const cPMes=getChart('cProdMes');
+  if(cPMes && hasMes){
+    cPMes.data.labels=activeMonths;
+    cPMes.data.datasets.forEach((ds,di)=>{
+      const prodKey=PRODUTOS[di]||PRODUTOS[0];
+      const prodData=(receitaMesProd[prodKey]||Array(12).fill(0));
+      ds.data=moIndices.map(i=>prodData[i]||0);
+    });
+    cPMes.update();
+  }
+
+  // cVendMes - vendedor por mês
+  const cVM=getChart('cVendMes');
+  if(cVM && hasMes){
+    cVM.data.labels=activeMonths;
+    const vendKeys=Object.keys(receitaMesVend);
+    const allVendKeys=[...VENDEDORES,...vendKeys.filter(k=>!VENDEDORES.includes(k))].slice(0,8);
+    cVM.data.datasets.forEach((ds,di)=>{
+      const vKey=allVendKeys[di];
+      const vData=(receitaMesVend[vKey]||Array(12).fill(0));
+      ds.data=moIndices.map(i=>vData[i]||0);
+      if(vKey) ds.label=vKey;
+    });
+    cVM.update();
+  }
+
+  // cFonte - origem por mês
+  const cFo=getChart('cFonte');
+  if(cFo && Object.keys(receitaFonte).length>0){
+    const fonteKeys=Object.keys(receitaFonte);
+    cFo.data.labels=fonteKeys;
+    cFo.data.datasets[0].data=fonteKeys.map(k=>receitaFonte[k]);
+    cFo.update();
+  }
+
+  // cABC curva
+  const cABC=getChart('cABC');
+  const cABCB=getChart('cABCBar');
+  if(cABC && Object.keys(clienteReceita).length>0){
+    const sorted=Object.entries(clienteReceita).sort((a,b)=>b[1]-a[1]);
+    const total=sorted.reduce((s,[,v])=>s+v,0);
+    let cumSum=0; let aClients=[],bClients=[],cClients=[];
+    sorted.forEach(([k,v])=>{ cumSum+=v; const pct=cumSum/total; if(pct<=0.8) aClients.push([k,v]); else if(pct<=0.95) bClients.push([k,v]); else cClients.push([k,v]); });
+    const aVal=aClients.reduce((s,[,v])=>s+v,0);
+    const bVal=bClients.reduce((s,[,v])=>s+v,0);
+    const cVal=cClients.reduce((s,[,v])=>s+v,0);
+    cABC.data.labels=['Curva A ('+aClients.length+' clientes)','Curva B ('+bClients.length+' clientes)','Curva C ('+cClients.length+' clientes)'];
+    cABC.data.datasets[0].data=[aVal,bVal,cVal];
+    cABC.update();
+    if(cABCB){
+      cABCB.data.datasets[0].data=[total>0?Math.round(aVal/total*100):0,total>0?Math.round(bVal/total*100):0,total>0?Math.round(cVal/total*100):0];
+      cABCB.data.datasets[1].data=[sorted.length>0?Math.round(aClients.length/sorted.length*100):0,sorted.length>0?Math.round(bClients.length/sorted.length*100):0,sorted.length>0?Math.round(cClients.length/sorted.length*100):0];
+      cABCB.update();
+    }
+  }
+
+  // Update KPIs
+  function fmtM(v){ if(v>=1e6) return 'R$ '+( v/1e6).toFixed(1)+'M'; if(v>=1e3) return 'R$ '+(v/1e3).toFixed(0)+'K'; return 'R$ '+v.toFixed(0); }
+  function setEl(id,val){ const el=document.getElementById(id); if(el) el.textContent=val; }
+  setEl('kpi-total-val', fmtM(totalPipe));
+  setEl('kpi-total-qtd', countPipe);
+  setEl('kpi-urgente-val', fmtM(urgenteVal));
+  setEl('kpi-urgente-qtd', urgente);
+  setEl('kpi-vencido-val', fmtM(vencidoVal));
+  setEl('kpi-vencido-qtd', vencido);
+  setEl('kpi-proximo-val', fmtM(proximoVal));
+  setEl('kpi-proximo-qtd', proximo);
+  setEl('kpi-semdata-val', fmtM(semDataVal));
+  setEl('kpi-semdata-qtd', semData);
+
+  // Update pipeline table
+  if(pipeRows.length>0){
+    const tbody=document.getElementById('pipeBody');
+    if(tbody){
+      tbody.innerHTML='';
+      pipeRows.sort((a,b)=>b.valor-a.valor).forEach(r=>{
+        const initials=r.resp.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+        const vendSlug=r.resp.split(' ')[0].toLowerCase();
+        const fechFmt=r.fech?(String(r.fech.getDate()).padStart(2,'0')+'/'+String(r.fech.getMonth()+1).padStart(2,'0')+'/'+String(r.fech.getFullYear()).slice(2)):'-';
+        const prodKey=PRODUTOS.find(p=>r.produto.toLowerCase().includes(p.toLowerCase().substring(0,4)))||r.produto;
+        const prodClass='pp-'+{PDV:'pdv','Ambientação Corp.':'amb',Frota:'fro','Proj. Especiais':'esp',Outros:'out'}[prodKey]||'out';
+        const tr=document.createElement('tr');
+        tr.innerHTML='<td class="proj">'+r.nome+'<span>'+r.empresa+'</span></td>'+
+          '<td class="valor">'+fmtM(r.valor)+'</td>'+
+          '<td class="resp"><div class="rb rb-'+vendSlug.slice(0,3)+'" title="'+r.resp+'">'+initials+'</div></td>'+
+          '<td style="text-align:center"><span class="pp '+prodClass+'">'+prodKey+'</span></td>'+
+          '<td class="prev">'+fechFmt+'</td>'+
+          '<td>'+(r.status||'—').substring(0,40)+'</td>'+
+          '<td class="tag-cell"><span class="tag-pipe tag-normal">'+r.urgTag+'</span></td>';
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  const totalRows=data.length;
+  const warnCols=Object.values(cm).filter(v=>v!==undefined).length;
+  const msg='<strong>'+totalRows.toLocaleString('pt-BR')+' registros importados</strong>'+
+    (warnCols<3?' <br><small>Atenção: apenas '+warnCols+' coluna(s) reconhecida(s). Verifique os cabeçalhos do CSV.</small>':'');
+  return {ok:true, msg, total:totalRows};
+}
+
 function showImportResult(type,msg){const el=document.getElementById('importResult');el.className='import-result '+type;el.textContent=msg;el.style.display='block';}
 function initPortal(){if(!window._inited){window._inited=true;buildCharts();pipeRender();paRender();}}
 function switchTab(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');event.target.closest('.tab').classList.add('active');if(name==='fluxos'&&!window._flowsBuilt){buildFlows();window._flowsBuilt=true;}}
