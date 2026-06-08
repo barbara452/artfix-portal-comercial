@@ -466,21 +466,41 @@ function handleFileSelect(e){
   reader.readAsText(file,'UTF-8');
 }
 function parseCSV(text){
-  const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-  const result = [];
-  for(let i=0;i<lines.length;i++){
-    const line = lines[i].trim();
+  // Normalize line endings
+  text = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  var lines = text.split('\n');
+  
+  // Detect separator: RD Station uses sep=| on first line
+  var sep = ',';
+  var startLine = 0;
+  if(lines[0] && lines[0].trim().toLowerCase().startsWith('sep=')){
+    var sepChar = lines[0].trim().slice(4);
+    if(sepChar) sep = sepChar;
+    startLine = 1; // skip the sep= line
+    console.log('[Artfix Import] Separador detectado:', JSON.stringify(sep));
+  } else {
+    // Auto-detect: check first data line for common separators
+    var sample = lines[0] || '';
+    if((sample.match(/\|/g)||[]).length > (sample.match(/;/g)||[]).length &&
+       (sample.match(/\|/g)||[]).length > (sample.match(/,/g)||[]).length) sep = '|';
+    else if((sample.match(/;/g)||[]).length > (sample.match(/,/g)||[]).length) sep = ';';
+    console.log('[Artfix Import] Separador auto-detectado:', JSON.stringify(sep));
+  }
+
+  var result = [];
+  for(var i = startLine; i < lines.length; i++){
+    var line = lines[i].trim();
     if(!line) continue;
-    const row = [];
-    let inQ=false, cell='';
-    for(let j=0;j<line.length;j++){
-      const ch=line[j];
-      if(ch==='"'){
-        if(inQ && line[j+1]==='"'){ cell+='"'; j++; }
-        else inQ=!inQ;
-      } else if((ch===','||ch===';') && !inQ){
-        row.push(cell.trim()); cell='';
-      } else { cell+=ch; }
+    var row = [];
+    var inQ = false, cell = '';
+    for(var j = 0; j < line.length; j++){
+      var ch = line[j];
+      if(ch === '"'){
+        if(inQ && line[j+1] === '"'){ cell += '"'; j++; }
+        else inQ = !inQ;
+      } else if(ch === sep && !inQ){
+        row.push(cell.trim()); cell = '';
+      } else { cell += ch; }
     }
     row.push(cell.trim());
     result.push(row);
@@ -489,27 +509,32 @@ function parseCSV(text){
 }
 function colMap(headers){
   const map={};
-  // Debug: log headers so user can see them in console
   console.log('[Artfix Import] Cabeçalhos detectados:', headers);
-  const patterns={
-    nome:[/nome.*neg|t[ií]tulo.*neg|deal.*name|negocio|neg[oó]cio|oportunidade|titulo/i],
-    empresa:[/empresa|companhia|company|cliente|conta|organiza/i],
-    valor:[/valor|value|montante|amount|pre[cç]o|total/i],
-    etapa:[/etapa|fase|stage|funil|pipeline|est[aá]gio/i],
-    resp:[/respons[aá]vel|owner|dono|vendedor|usu[aá]rio.*respons|atribu[ií]do/i],
-    produto:[/produto|product|servi[cç]o|categoria|tipo.*neg|segmento/i],
-    fonte:[/origem|fonte|source|canal|como.*conheceu|campanha/i],
-    fechamento:[/fechamento|close.*date|previs[aã]o|data.*prev|conclus[aã]o|encerramento/i],
-    status:[/status|situa[cç][aã]o|estado|resultado/i],
-    mes:[/m[eê]s.*fech|month|compet[eê]ncia/i]
+  // Normalize: remove accents, lowercase, trim
+  function norm(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim(); }
+  const normed = headers.map(norm);
+  
+  // Patterns for each field - covering RD Station CRM export names
+  const patterns = {
+    nome:   ['nome do negocio','titulo do negocio','negocio','oportunidade','titulo','deal name','name'],
+    empresa:['empresa','companhia','company','cliente','conta','organizacao','account'],
+    valor:  ['valor','valor do negocio','value','montante','amount','preco','total'],
+    etapa:  ['etapa','etapa do funil','fase','stage','estagio','funil','pipeline stage'],
+    resp:   ['responsavel','dono','owner','vendedor','usuario responsavel','atribuido a','assigned to'],
+    produto:['produto','servico','categoria','tipo de negocio','segmento','product','service'],
+    fonte:  ['origem','fonte','source','canal','como nos conheceu','campanha','lead source'],
+    fechamento:['previsao de fechamento','data de fechamento','data prevista','close date','conclusao','data de encerramento'],
+    status: ['status','situacao','estado','resultado','ganho','perdido']
   };
-  headers.forEach((h,i)=>{
-    const hn=h.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
-    Object.entries(patterns).forEach(([key,pats])=>{
-      if(map[key]===undefined && pats.some(p=>p.test(hn))) map[key]=i;
+
+  normed.forEach((h, i) => {
+    Object.entries(patterns).forEach(([key, vals]) => {
+      if(map[key] === undefined && vals.some(v => h.includes(v) || v.includes(h.substring(0,8)))) {
+        map[key] = i;
+      }
     });
   });
-  console.log('[Artfix Import] Mapeamento de colunas:', map);
+  console.log('[Artfix Import] Mapeamento:', map);
   return map;
 }
 
