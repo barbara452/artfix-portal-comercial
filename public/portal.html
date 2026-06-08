@@ -752,9 +752,18 @@ function processDashboardData(rows, filename){
   const warnCols=Object.values(cm).filter(v=>v!==undefined).length;
     const totalRows=data.length;
   const warnCols=Object.values(cm).filter(v=>v!==undefined).length;
+    const totalRows=data.length;
+  const cm2=Object.entries(cm).filter(([k,v])=>v!==undefined);
+  const warnCols=cm2.length;
+  const detectedStr=cm2.map(([k,v])=>k+'=col'+v).join(', ');
   let msg='<b>'+totalRows.toLocaleString('pt-BR')+' registros importados</b>';
-  if(warnCols<3) msg+='<br><small style="color:#c00">Atenção: apenas '+warnCols+' coluna(s) reconhecida(s). Abra o console (F12) para ver os cabeçalhos detectados.</small>';
+  if(warnCols<3){
+    msg+='<br><span style="color:#c00;font-size:12px">⚠ Apenas '+warnCols+' coluna(s) mapeada(s): '+detectedStr+'<br>Cabeçalhos encontrados: <i>'+headers.slice(0,8).join(' | ')+'</i><br>Abra o console (F12 > Console) para ver todos.</span>';
+  } else {
+    msg+='<br><span style="color:#059;font-size:12px">✓ '+warnCols+' colunas mapeadas: '+detectedStr+'</span>';
+  }
   return {ok:true, msg, total:totalRows};
+}
 }
 }
 
