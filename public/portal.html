@@ -577,7 +577,14 @@ function processDashboardData(rows, filename){
   const pipeRows=[];
   const hoje = new Date();
 
-  data.forEach(row=>{
+  
+  // Debug: collect unique status and etapa values
+  const _uniqueStatus = [...new Set(data.map(r => (cm.status!==undefined?r[cm.status]:'?')||'').filter(Boolean))].slice(0,20);
+  const _uniqueEtapa = [...new Set(data.map(r => (cm.etapa!==undefined?r[cm.etapa]:'?')||'').filter(Boolean))].slice(0,20);
+  console.log('[Artfix] Status únicos:', _uniqueStatus);
+  console.log('[Artfix] Etapas únicas:', _uniqueEtapa);
+  console.log('[Artfix] Valor sample (col'+cm.valor+'):', data.slice(0,3).map(r=>cm.valor!==undefined?r[cm.valor]:'?'));
+data.forEach(row=>{
     const valorStr=getVal(row,'valor');
     const valor=parseValor(valorStr);
     const etapa=getVal(row,'etapa').toLowerCase();
@@ -589,8 +596,8 @@ function processDashboardData(rows, filename){
     const fech=parseDate(fechStr);
     const nome=getVal(row,'nome')||'(sem nome)';
     const empresa=getVal(row,'empresa')||'';
-    const isWon=/(ganho|won|fechado|vendido)/i.test(status)||/(ganho|won|fechado|vendido)/i.test(etapa);
-    const isLost=/(perdido|lost|cancelado)/i.test(status)||/(perdido|lost|cancelado)/i.test(etapa);
+    const isWon=/(ganho|won|fechad|vend[ie]|closed|conclu)/i.test(status)||/(ganho|won|fechad|vend[ie]|closed|conclu)/i.test(etapa);
+    const isLost=/(perdid|lost|cancel|reprov|descart|inativ)/i.test(status)||/(perdid|lost|cancel|reprov|descart|inativ)/i.test(etapa);
     const isOpen=!isLost;
 
     // Revenue by month (won deals)
