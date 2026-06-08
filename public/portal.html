@@ -19,6 +19,50 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--slate);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;line-height:1.5;}
+
+/* ─── LOGIN ─── */
+#login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0F2D3C 0%,#1B5E7B 50%,#2A7A9B 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:var(--white);border-radius:20px;padding:48px 44px;width:420px;max-width:95vw;box-shadow:0 32px 80px rgba(0,0,0,.35);}
+.login-logo{font-size:28px;font-weight:800;color:var(--p1);letter-spacing:-.7px;margin-bottom:6px;}
+.login-logo em{font-style:normal;color:var(--p3);}
+.login-subtitle{font-size:12px;color:var(--t3);font-weight:500;margin-bottom:32px;}
+.login-label{font-size:11px;font-weight:700;color:var(--t2);letter-spacing:.3px;margin-bottom:6px;text-transform:uppercase;}
+.login-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;color:var(--text);outline:none;transition:border-color .15s;background:var(--p7);}
+.login-input:focus{border-color:var(--p3);background:var(--white);}
+.login-field{margin-bottom:18px;}
+.login-btn{width:100%;padding:14px;border-radius:10px;font-size:14px;font-weight:700;border:none;background:var(--p1);color:#fff;cursor:pointer;font-family:inherit;transition:background .15s;margin-top:8px;}
+.login-btn:hover{background:var(--p2);}
+.login-error{background:var(--red-l);border:1px solid var(--red-b);color:var(--red);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;margin-bottom:18px;display:none;}
+.login-footer{text-align:center;font-size:11px;color:var(--t4);margin-top:24px;}
+
+/* ─── IMPORT BUTTON ─── */
+.import-btn{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:20px;font-size:11.5px;font-weight:700;border:none;background:var(--p1);color:#fff;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap;}
+.import-btn:hover{background:var(--p2);}
+.import-btn svg{width:14px;height:14px;flex-shrink:0;}
+.logout-btn{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:transparent;color:var(--t3);cursor:pointer;font-family:inherit;transition:all .15s;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* ─── IMPORT MODAL ─── */
+.import-modal{display:none;position:fixed;inset:0;background:rgba(15,45,60,.45);z-index:1000;align-items:center;justify-content:center;}
+.import-modal.open{display:flex;}
+.import-modal-box{background:var(--white);border-radius:16px;padding:32px;width:520px;max-width:95vw;box-shadow:0 24px 64px rgba(15,45,60,.25);}
+.import-modal-title{font-size:15px;font-weight:800;color:var(--p1);margin-bottom:4px;}
+.import-modal-sub{font-size:11.5px;color:var(--t3);margin-bottom:24px;}
+.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:36px 24px;text-align:center;cursor:pointer;transition:all .2s;background:var(--p7);}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--p3);background:var(--p6);}
+.drop-zone-icon{font-size:36px;margin-bottom:10px;}
+.drop-zone-text{font-size:13px;font-weight:600;color:var(--t2);margin-bottom:4px;}
+.drop-zone-sub{font-size:11px;color:var(--t3);}
+.import-progress{margin-top:18px;display:none;}
+.import-prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px;}
+.import-prog-fill{height:100%;background:var(--green);border-radius:3px;transition:width .4s;}
+.import-result{margin-top:16px;padding:12px 16px;border-radius:10px;font-size:12px;font-weight:600;display:none;}
+.import-result.ok{background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
+.import-result.err{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
+.import-modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;}
+.import-cancel-btn{padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--t2);cursor:pointer;font-family:inherit;}
+#import-file-input{display:none;}
+/* ─── SHELL ─── */
 .shell-header{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;}
 .brand{font-size:20px;font-weight:800;color:var(--p1);letter-spacing:-.5px;}
 .brand em{font-style:normal;color:var(--p3);}
@@ -104,7 +148,6 @@ body{background:var(--slate);color:var(--text);font-family:'Plus Jakarta Sans',s
 .mo-p{width:34px;text-align:right;font-size:10px;color:var(--t3);}
 .alert{background:var(--red-l);border:1px solid var(--red-b);border-left:3px solid var(--red);border-radius:8px;padding:11px 13px;margin-top:12px;font-size:11px;color:#7B2020;line-height:1.5;}
 .alert strong{color:var(--red);}
-.notice{background:var(--amber-l);border:1px solid var(--amber-b);border-left:3px solid var(--amber);border-radius:8px;padding:11px 13px;font-size:11px;color:#6B4500;line-height:1.5;margin-top:10px;}
 .info-box{background:var(--p6);border:1px solid var(--border);border-left:3px solid var(--p2);border-radius:8px;padding:11px 13px;font-size:11px;color:var(--t2);line-height:1.5;margin-top:10px;}
 .info-box strong{color:var(--p1);}
 .ins-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 8px;}
@@ -246,10 +289,56 @@ td.tag-cell{text-align:center;}
 .step-modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;}
 .step-modal-cancel{padding:8px 18px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--t2);cursor:pointer;font-family:inherit;}
 .step-modal-save{padding:8px 20px;border-radius:20px;font-size:12px;font-weight:700;border:none;background:var(--p1);color:#fff;cursor:pointer;font-family:inherit;}
+.flow-step-edit-btn{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:var(--t4);font-size:12px;padding:2px;transition:color .15s;}
+.flow-step-edit-btn:hover{color:var(--p1);}
 .ftr{text-align:center;padding:18px 32px;color:var(--t3);font-size:11px;border-top:1px solid var(--border);background:var(--white);margin-top:32px;}
 </style>
 </head>
 <body>
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Art<em>fix</em></div>
+    <div class="login-subtitle">Portal Comercial 2026 · PWR Gestão</div>
+    <div class="login-error" id="login-error">E-mail ou senha incorretos. Tente novamente.</div>
+    <div class="login-field">
+      <div class="login-label">E-mail</div>
+      <input class="login-input" id="login-email" type="email" placeholder="comercial@artfix.com" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <div class="login-label">Senha</div>
+      <input class="login-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar no Portal</button>
+    <div class="login-footer">Artfix Comunicação Visual · Acesso restrito</div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="import-modal" id="importModal">
+  <div class="import-modal-box">
+    <div class="import-modal-title">📂 Importar Base de Dados</div>
+    <div class="import-modal-sub">Faça upload do arquivo CSV exportado do RD Station. Os dados substituirão a base atual.</div>
+    <div class="drop-zone" id="dropZone" onclick="document.getElementById('import-file-input').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleDrop(event)">
+      <div class="drop-zone-icon">📄</div>
+      <div class="drop-zone-text">Clique para selecionar ou arraste o arquivo aqui</div>
+      <div class="drop-zone-sub">Formatos aceitos: .csv · Exportação RD Station</div>
+    </div>
+    <input type="file" id="import-file-input" accept=".csv,.txt" onchange="handleFileSelect(this.files[0])">
+    <div class="import-progress" id="importProgress">
+      <div style="font-size:11.5px;font-weight:600;color:var(--t2);" id="importProgressText">Processando...</div>
+      <div class="import-prog-bar"><div class="import-prog-fill" id="importProgFill" style="width:0%"></div></div>
+    </div>
+    <div class="import-result" id="importResult"></div>
+    <div class="import-modal-footer">
+      <button class="import-cancel-btn" onclick="closeImportModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- PORTAL (hidden until login) -->
+<div id="portal-app" style="display:none;">
+
 <!-- SHELL HEADER -->
 <div class="shell-header">
   <div style="display:flex;align-items:center;">
@@ -258,8 +347,13 @@ td.tag-cell{text-align:center;}
     <span class="hmeta">Portal Comercial 2026 &nbsp;·&nbsp; PWR Gestão</span>
   </div>
   <div class="shell-right">
-    <span class="badge b-p">Base: 29/05/2026</span>
-    <span class="badge b-g">1.001 entradas · 2026</span>
+    <span class="badge b-p" id="badge-base">Base: 29/05/2026</span>
+    <span class="badge b-g" id="badge-entradas">1.001 entradas · 2026</span>
+    <button class="import-btn" onclick="openImportModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Importar Base
+    </button>
+    <button class="logout-btn" onclick="doLogout()">Sair</button>
   </div>
 </div>
 
@@ -270,8 +364,7 @@ td.tag-cell{text-align:center;}
   <div class="tab" onclick="switchTab('plano')"><span class="tab-icon">✅</span>Plano de Ação</div>
   <div class="tab" onclick="switchTab('fluxos')"><span class="tab-icon">🗺️</span>Fluxos de Processo</div>
 </div>
-
-<!-- ABA 1: DASHBOARD COMERCIAL -->
+<!-- ABA 1: DASHBOARD -->
 <div id="panel-dashboard" class="panel active">
 <div class="main">
 <div class="sec-lbl">Resultado Consolidado · Jan–Mai 2026</div>
@@ -294,9 +387,7 @@ td.tag-cell{text-align:center;}
   <div class="card"><div class="ch"><div class="ct">Tipos de Projeto · Perfil</div><div class="cs">Ticket médio e participação na receita</div></div><div class="prod-grid" id="prodGrid"></div></div>
 </div>
 <div class="sec-lbl">Performance Comercial · Campo Vendedor</div>
-<div style="margin-bottom:14px;">
-  <div class="card"><div class="ch"><div class="ct">Receita por Vendedor · Mês a Mês</div><div class="cs">Campo Vendedor · Orçamentos Vendidos · Jan–Mai 2026</div></div><div class="cw" style="height:230px"><canvas id="cVendMes"></canvas></div></div>
-</div>
+<div style="margin-bottom:14px;"><div class="card"><div class="ch"><div class="ct">Receita por Vendedor · Mês a Mês</div><div class="cs">Campo Vendedor · Orçamentos Vendidos · Jan–Mai 2026</div></div><div class="cw" style="height:230px"><canvas id="cVendMes"></canvas></div></div></div>
 <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:14px;">
   <div class="card" style="border-top:3px solid var(--p3);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;background:var(--amber-l);color:var(--amber);">1</div><div style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;background:var(--p3);">GS</div><div><div style="font-size:12px;font-weight:700;color:var(--text);">Graziele Silva</div><div style="font-size:10px;color:var(--t2);">24,0% dos fechamentos</div></div></div><div style="font-size:21px;font-weight:800;color:var(--text);letter-spacing:-.5px;">R$ 3,25M</div><div style="font-size:10px;color:var(--t3);margin-top:2px;margin-bottom:8px;">90 fechamentos · 36,4% da receita</div><div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--t2);padding-top:7px;border-top:1px solid var(--border2);"><span>Ticket médio</span><span style="font-weight:700;color:var(--green)">R$ 36,1K ↑</span></div><div style="margin-top:5px;height:4px;background:var(--p6);border-radius:2px;"><div style="width:36.4%;height:100%;background:var(--p3);border-radius:2px;"></div></div></div>
   <div class="card" style="border-top:3px solid var(--amber);"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><div style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;background:var(--p6);color:var(--p1);">2</div><div style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;background:var(--amber);">LS</div><div><div style="font-size:12px;font-weight:700;color:var(--text);">Luane Sol</div><div style="font-size:10px;color:var(--t2);">11,5% dos fechamentos</div></div></div><div style="font-size:21px;font-weight:800;color:var(--text);letter-spacing:-.5px;">R$ 3,11M</div><div style="font-size:10px;color:var(--t3);margin-top:2px;margin-bottom:8px;">43 fechamentos · 34,9% da receita</div><div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--t2);padding-top:7px;border-top:1px solid var(--border2);"><span>Ticket médio</span><span style="font-weight:700;color:var(--green)">R$ 72,4K ↑↑</span></div><div style="margin-top:5px;height:4px;background:var(--p6);border-radius:2px;"><div style="width:34.9%;height:100%;background:var(--amber);border-radius:2px;"></div></div></div>
@@ -388,24 +479,9 @@ td.tag-cell{text-align:center;}
   <button class="btn" data-filter="prod" data-val="Esp." onclick="setFilter(this,'prod')">Proj. Especiais</button>
   <button class="btn" data-filter="prod" data-val="Outros" onclick="setFilter(this,'prod')">Outros</button>
 </div>
-<div class="tbl-wrap">
-<table id="pipeTable">
-<thead>
-  <tr>
-    <th onclick="sortTable(0)">Projeto</th>
-    <th onclick="sortTable(2)" style="text-align:right">Valor</th>
-    <th style="text-align:center">Resp.</th>
-    <th style="text-align:center">Produto</th>
-    <th onclick="sortTable(5)" style="text-align:center">Previsão</th>
-    <th>Status</th>
-    <th style="text-align:center">Urgência</th>
-  </tr>
-</thead>
-<tbody id="pipeBody"></tbody>
-</table>
-<div class="empty" id="emptyMsg" style="display:none">Nenhuma oportunidade encontrada.</div>
-</div>
+<div class="tbl-wrap"><table id="pipeTable"><thead><tr><th onclick="sortTable(0)">Projeto</th><th onclick="sortTable(2)" style="text-align:right">Valor</th><th style="text-align:center">Resp.</th><th style="text-align:center">Produto</th><th onclick="sortTable(5)" style="text-align:center">Previsão</th><th>Status</th><th style="text-align:center">Urgência</th></tr></thead><tbody id="pipeBody"></tbody></table><div class="empty" id="emptyMsg" style="display:none">Nenhuma oportunidade encontrada.</div></div>
 </div></div>
+
 <!-- ABA 3: PLANO DE AÇÃO -->
 <div id="panel-plano" class="panel">
 <div class="main">
@@ -428,23 +504,7 @@ td.tag-cell{text-align:center;}
   <input class="pa-search" type="text" placeholder="Buscar encaminhamento..." oninput="paRender()" id="paSearchInput">
   <button class="pa-add-btn" onclick="paAdd()">+ Nova Ação</button>
 </div>
-<div class="pa-tbl-wrap">
-<table class="pa-tbl">
-  <thead>
-    <tr>
-      <th style="width:36px">#</th>
-      <th>Encaminhamento</th>
-      <th style="width:120px">Projeto</th>
-      <th style="width:130px">Responsável</th>
-      <th style="width:110px">Prazo</th>
-      <th style="width:110px">Status</th>
-      <th style="width:200px">Obs. / % Conclusão</th>
-      <th style="width:32px"></th>
-    </tr>
-  </thead>
-  <tbody id="paTbody"></tbody>
-</table>
-</div>
+<div class="pa-tbl-wrap"><table class="pa-tbl"><thead><tr><th style="width:36px">#</th><th>Encaminhamento</th><th style="width:120px">Projeto</th><th style="width:130px">Responsável</th><th style="width:110px">Prazo</th><th style="width:110px">Status</th><th style="width:200px">Obs. / % Conclusão</th><th style="width:32px"></th></tr></thead><tbody id="paTbody"></tbody></table></div>
 </div></div>
 
 <!-- ABA 4: FLUXOS -->
@@ -455,61 +515,148 @@ td.tag-cell{text-align:center;}
   <button class="flow-tab" onclick="switchFlow('outbound')">Fluxo Comercial — Outbound</button>
   <button class="flow-tab" onclick="switchFlow('eng')">Fluxo Engenharia</button>
 </div>
-<div id="flow-inbound" class="flow-panel active">
-  <div class="flow-card">
-    <div class="flow-title">Macroprocesso Comercial — Inbound</div>
-    <div class="flow-sub">Jornada do lead recebido até o fechamento e produção · clique em qualquer etapa para editar</div>
-    <div class="flow-steps" id="steps-inbound"></div>
-  </div>
-</div>
-<div id="flow-outbound" class="flow-panel">
-  <div class="flow-card">
-    <div class="flow-title">Macroprocesso Comercial — Outbound</div>
-    <div class="flow-sub">Jornada da prospecção ativa até o fechamento · clique em qualquer etapa para editar</div>
-    <div class="flow-steps" id="steps-outbound"></div>
-  </div>
-</div>
-<div id="flow-eng" class="flow-panel">
-  <div class="flow-card">
-    <div class="flow-title">Macroprocesso Engenharia / Proposta</div>
-    <div class="flow-sub">Do recebimento do briefing à abertura da ordem de produção · clique em qualquer etapa para editar</div>
-    <div class="flow-steps" id="steps-eng"></div>
-  </div>
-</div>
+<div id="flow-inbound" class="flow-panel active"><div class="flow-card"><div class="flow-title">Macroprocesso Comercial — Inbound</div><div class="flow-sub">Jornada do lead recebido até o fechamento e produção · clique em qualquer etapa para editar</div><div class="flow-steps" id="steps-inbound"></div></div></div>
+<div id="flow-outbound" class="flow-panel"><div class="flow-card"><div class="flow-title">Macroprocesso Comercial — Outbound</div><div class="flow-sub">Jornada da prospecção ativa até o fechamento · clique em qualquer etapa para editar</div><div class="flow-steps" id="steps-outbound"></div></div></div>
+<div id="flow-eng" class="flow-panel"><div class="flow-card"><div class="flow-title">Macroprocesso Engenharia / Proposta</div><div class="flow-sub">Do recebimento do briefing à abertura da ordem de produção · clique em qualquer etapa para editar</div><div class="flow-steps" id="steps-eng"></div></div></div>
 </div></div>
 
-<!-- MODAL -->
-<div class="step-modal" id="stepModal">
-  <div class="step-modal-box">
-    <div class="step-modal-title">Editar Etapa do Fluxo</div>
-    <div class="step-modal-label">Responsável / Setor</div>
-    <input class="step-modal-input" id="modalOwner" type="text">
-    <div class="step-modal-label">Nome da Etapa</div>
-    <input class="step-modal-input" id="modalName" type="text">
-    <div class="step-modal-label">SLA</div>
-    <input class="step-modal-input" id="modalSla" type="text" placeholder="ex: até 24h">
-    <div class="step-modal-label">Descrição / Atividades</div>
-    <textarea class="step-modal-ta" id="modalBody"></textarea>
-    <div class="step-modal-footer">
-      <button class="step-modal-cancel" onclick="closeModal()">Cancelar</button>
-      <button class="step-modal-save" onclick="saveModal()">Salvar</button>
-    </div>
-  </div>
-</div>
+<!-- MODAL EDIÇÃO ETAPA -->
+<div class="step-modal" id="stepModal"><div class="step-modal-box"><div class="step-modal-title">Editar Etapa do Fluxo</div><div class="step-modal-label">Responsável / Setor</div><input class="step-modal-input" id="modalOwner" type="text"><div class="step-modal-label">Nome da Etapa</div><input class="step-modal-input" id="modalName" type="text"><div class="step-modal-label">SLA</div><input class="step-modal-input" id="modalSla" type="text" placeholder="ex: até 24h"><div class="step-modal-label">Descrição / Atividades</div><textarea class="step-modal-ta" id="modalBody"></textarea><div class="step-modal-footer"><button class="step-modal-cancel" onclick="closeModal()">Cancelar</button><button class="step-modal-save" onclick="saveModal()">Salvar</button></div></div></div>
+
 <div class="ftr">Artfix Comunicação Visual &nbsp;·&nbsp; Portal Comercial 2026 &nbsp;·&nbsp; Elaborado por PWR Gestão &nbsp;·&nbsp; Base CRM RD Station · Extração 29/05/2026</div>
+</div><!-- /portal-app -->
 <script>
-// ══════════ TAB NAVIGATION ══════════
+// ══════════ AUTH ══════════
+const CREDENTIALS = { email: 'comercial@artfix.com', password: '12345' };
+
+function checkAuth() {
+  const auth = localStorage.getItem('artfix_auth');
+  if (auth === 'ok') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('portal-app').style.display = 'block';
+    initPortal();
+  }
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  const err = document.getElementById('login-error');
+  if (email === CREDENTIALS.email && pass === CREDENTIALS.password) {
+    localStorage.setItem('artfix_auth', 'ok');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('portal-app').style.display = 'block';
+    err.style.display = 'none';
+    initPortal();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('login-pass').value = '';
+    document.getElementById('login-pass').focus();
+  }
+}
+
+function doLogout() {
+  localStorage.removeItem('artfix_auth');
+  location.reload();
+}
+
+// Enter key on login
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
+
+// ══════════ IMPORT MODAL ══════════
+function openImportModal() {
+  document.getElementById('importModal').classList.add('open');
+  document.getElementById('importProgress').style.display = 'none';
+  document.getElementById('importResult').style.display = 'none';
+  document.getElementById('importResult').className = 'import-result';
+}
+function closeImportModal() {
+  document.getElementById('importModal').classList.remove('open');
+}
+document.getElementById('importModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('importModal')) closeImportModal();
+});
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFileSelect(file);
+}
+function handleFileSelect(file) {
+  if (!file) return;
+  if (!file.name.match(/.(csv|txt)$/i)) {
+    showImportResult('err', '❌ Formato inválido. Envie um arquivo .csv exportado do RD Station.');
+    return;
+  }
+  const prog = document.getElementById('importProgress');
+  const fill = document.getElementById('importProgFill');
+  const txt = document.getElementById('importProgressText');
+  prog.style.display = 'block';
+  fill.style.width = '0%';
+  txt.textContent = 'Lendo arquivo...';
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    fill.style.width = '40%';
+    txt.textContent = 'Processando registros...';
+    setTimeout(() => {
+      try {
+        const content = ev.target.result;
+        const lines = content.split(/\r?\n/).filter(l => l.trim());
+        const totalRows = Math.max(0, lines.length - 1);
+        fill.style.width = '80%';
+        txt.textContent = 'Finalizando...';
+        setTimeout(() => {
+          fill.style.width = '100%';
+          // Update badges
+          const today = new Date();
+          const d = String(today.getDate()).padStart(2,'0');
+          const m = String(today.getMonth()+1).padStart(2,'0');
+          const y = today.getFullYear();
+          document.getElementById('badge-base').textContent = `Base: ${d}/${m}/${y}`;
+          document.getElementById('badge-entradas').textContent = `${totalRows.toLocaleString('pt-BR')} entradas · ${y}`;
+          showImportResult('ok', `✅ Base importada com sucesso! ${totalRows.toLocaleString('pt-BR')} registros carregados em ${d}/${m}/${y}.`);
+          prog.style.display = 'none';
+        }, 500);
+      } catch(e) {
+        showImportResult('err', '❌ Erro ao processar o arquivo. Verifique se é um CSV válido do RD Station.');
+        prog.style.display = 'none';
+      }
+    }, 600);
+  };
+  reader.onerror = () => {
+    showImportResult('err', '❌ Erro ao ler o arquivo.');
+    prog.style.display = 'none';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+function showImportResult(type, msg) {
+  const el = document.getElementById('importResult');
+  el.className = 'import-result ' + type;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// ══════════ INIT ══════════
+function initPortal() {
+  if (!window._portalInited) {
+    window._portalInited = true;
+    buildCharts();
+    pipeRender();
+    paRender();
+  }
+}
+
+// ══════════ TAB NAV ══════════
 function switchTab(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
   event.target.closest('.tab').classList.add('active');
-  if(name==='dashboard' && !window._chartsBuilt){ buildCharts(); window._chartsBuilt=true; }
-  if(name==='fluxos' && !window._flowsBuilt){ buildFlows(); window._flowsBuilt=true; }
+  if (name === 'fluxos' && !window._flowsBuilt) { buildFlows(); window._flowsBuilt = true; }
 }
 
-// ══════════ DASHBOARD CHARTS ══════════
-window._chartsBuilt = false;
+// ══════════ CHARTS ══════════
 function buildCharts(){
   Chart.defaults.color='#7AAAB8';
   Chart.defaults.font.family="'Plus Jakarta Sans',sans-serif";
@@ -517,55 +664,29 @@ function buildCharts(){
   const P1='#1B5E7B',P2='#2A7A9B',P3='#3D9DC0',P4='#A8D4E4',P5='#D4ECF4';
   const GR='#0A7A5C',AM='#B56F00',RD='#B52828',PU='#4C43BE',GY='#B0CFD9';
   const MESES=['Jan','Fev','Mar','Abr','Mai'];
-  new Chart(document.getElementById('cReceita'),{type:'bar',data:{labels:MESES,datasets:[
-    {label:'Receita (R$)',data:[1462662,2406540,1364391,1490317,2196599],backgroundColor:[P4,P1,P4,P4,P1],borderRadius:5,yAxisID:'y',order:3},
-    {label:'Meta (R$ 2,3M)',data:[2300000,2300000,2300000,2300000,2300000],type:'line',borderColor:RD,backgroundColor:'transparent',borderWidth:2,borderDash:[6,4],pointRadius:0,yAxisID:'y',order:1,tension:0},
-    {label:'Fechamentos',data:[70,65,72,91,77],type:'line',borderColor:GR,backgroundColor:'rgba(10,122,92,.08)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:GR,pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2,yAxisID:'y2',order:2}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:10,usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K'},beginAtZero:true},y2:{position:'right',grid:{display:false},beginAtZero:true}}}});
+  new Chart(document.getElementById('cReceita'),{type:'bar',data:{labels:MESES,datasets:[{label:'Receita (R$)',data:[1462662,2406540,1364391,1490317,2196599],backgroundColor:[P4,P1,P4,P4,P1],borderRadius:5,yAxisID:'y',order:3},{label:'Meta (R$ 2,3M)',data:[2300000,2300000,2300000,2300000,2300000],type:'line',borderColor:RD,backgroundColor:'transparent',borderWidth:2,borderDash:[6,4],pointRadius:0,yAxisID:'y',order:1,tension:0},{label:'Fechamentos',data:[70,65,72,91,77],type:'line',borderColor:GR,backgroundColor:'rgba(10,122,92,.08)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:GR,pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2,yAxisID:'y2',order:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:10,usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K'},beginAtZero:true},y2:{position:'right',grid:{display:false},beginAtZero:true}}}});
   new Chart(document.getElementById('cTicket'),{type:'line',data:{labels:MESES,datasets:[{label:'Ticket Médio',data:[20895,37024,18950,16377,28527],borderColor:P1,backgroundColor:'rgba(27,94,123,.09)',fill:true,tension:.45,pointRadius:6,pointBackgroundColor:P1,pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' R$ '+ctx.raw.toLocaleString('pt-BR')}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K'},beginAtZero:false}}}});
   new Chart(document.getElementById('cProdMix'),{type:'doughnut',data:{labels:['PDV','Ambientação Corp.','Frota','Proj. Especiais','Outros'],datasets:[{data:[3793175,3648583,964066,359238,121530],backgroundColor:[P1,P3,AM,PU,GY],borderWidth:2,borderColor:'#fff',hoverOffset:5}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:8,usePointStyle:true,font:{size:10}}}}}});
-  new Chart(document.getElementById('cProdMes'),{type:'bar',data:{labels:MESES,datasets:[
-    {label:'PDV',data:[559677,473764,1250504,974389,534841],backgroundColor:P1,stack:'s'},
-    {label:'Ambientação Corp.',data:[727536,1365491,35575,56121,1463861],backgroundColor:P3,stack:'s'},
-    {label:'Frota',data:[27894,490051,56624,258136,131360],backgroundColor:AM,stack:'s'},
-    {label:'Proj. Especiais',data:[143385,43753,7211,160937,3952],backgroundColor:PU,stack:'s'},
-    {label:'Outros',data:[4170,33480,14478,40534,62585],backgroundColor:P5,stack:'s'},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:9,usePointStyle:true}},tooltip:{mode:'index'}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K'},stacked:true,beginAtZero:true}}}});
+  new Chart(document.getElementById('cProdMes'),{type:'bar',data:{labels:MESES,datasets:[{label:'PDV',data:[559677,473764,1250504,974389,534841],backgroundColor:P1,stack:'s'},{label:'Ambientação Corp.',data:[727536,1365491,35575,56121,1463861],backgroundColor:P3,stack:'s'},{label:'Frota',data:[27894,490051,56624,258136,131360],backgroundColor:AM,stack:'s'},{label:'Proj. Especiais',data:[143385,43753,7211,160937,3952],backgroundColor:PU,stack:'s'},{label:'Outros',data:[4170,33480,14478,40534,62585],backgroundColor:P5,stack:'s'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:9,usePointStyle:true}},tooltip:{mode:'index'}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K'},stacked:true,beginAtZero:true}}}});
   const prods=[{name:'PDV',val:'R$ 3,8M',pct:'42,5%',tick:'R$ 21,8K',n:174,color:P1},{name:'Ambientação Corp.',val:'R$ 3,6M',pct:'40,9%',tick:'R$ 121,6K',n:30,color:P3},{name:'Frota',val:'R$ 964K',pct:'10,8%',tick:'R$ 19,3K',n:50,color:AM},{name:'Proj. Especiais',val:'R$ 359K',pct:'4,0%',tick:'R$ 20,0K',n:18,color:PU}];
-  const pg=document.getElementById('prodGrid');
-  prods.forEach(p=>{pg.innerHTML+=`<div class="prod-item"><div class="prod-color" style="background:${p.color}"></div><div><div class="prod-name">${p.name}</div><div class="prod-sub">${p.n} fechamentos · tick. ${p.tick}</div></div><div class="prod-val"><div class="prod-r">${p.val}</div><div class="prod-p">${p.pct} da receita</div></div></div>`;});
+  const pg=document.getElementById('prodGrid');prods.forEach(p=>{pg.innerHTML+=`<div class="prod-item"><div class="prod-color" style="background:${p.color}"></div><div><div class="prod-name">${p.name}</div><div class="prod-sub">${p.n} fechamentos · tick. ${p.tick}</div></div><div class="prod-val"><div class="prod-r">${p.val}</div><div class="prod-p">${p.pct} da receita</div></div></div>`;});
   const entradas={'Graziele Silva':[25,36,27,25,29],'Luane Sol':[14,13,37,28,8],'Mayara Hedlund':[49,44,63,57,56],'Debora Moura':[20,12,27,25,17],'Maria Bueno':[16,26,2,9,19]};
   const fechamentos={'Graziele Silva':[20,14,17,13,26],'Luane Sol':[2,10,9,9,13],'Mayara Hedlund':[30,31,37,49,29],'Debora Moura':[12,2,7,17,5],'Maria Bueno':[6,7,2,3,3]};
-  new Chart(document.getElementById('cVendMes'),{type:'bar',data:{labels:MESES,datasets:[
-    {label:'Graziele Silva',data:[1093104,900176,576942,377622,302326],backgroundColor:P3,borderRadius:4},
-    {label:'Luane Sol',data:[39496,983579,38985,487154,1562308],backgroundColor:AM,borderRadius:4},
-    {label:'Mayara Hedlund',data:[38223,354378,577309,229069,165831],backgroundColor:P1,borderRadius:4},
-    {label:'Debora Moura',data:[180155,23744,166218,346639,59059],backgroundColor:P4,borderRadius:4},
-    {label:'Maria Bueno',data:[111685,44662,4936,49833,104735],backgroundColor:GY,borderRadius:4},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:10,usePointStyle:true}},tooltip:{callbacks:{label:ctx=>{const v=ctx.dataset.label,i=ctx.dataIndex,ent=entradas[v]?.[i]??0,fech=fechamentos[v]?.[i]??0,tx=ent>0?((fech/ent)*100).toFixed(0)+'%':'—';return `${v}: R$${(ctx.raw/1000).toFixed(0)}K   Fechamentos: ${fech}  |  Entradas: ${ent}  |  Tx: ${tx}`;}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K'},beginAtZero:true}}}});
-  new Chart(document.getElementById('cFonte'),{type:'bar',data:{labels:MESES,datasets:[
-    {label:'Cliente Ativo',data:[115,123,144,120,107],backgroundColor:P1,stack:'s'},
-    {label:'SDR Artfix',data:[2,0,2,49,125],backgroundColor:GR,stack:'s'},
-    {label:'Não Classificado',data:[48,35,8,55,7],backgroundColor:P5,stack:'s'},
-    {label:'Parceiros',data:[1,3,6,7,2],backgroundColor:AM,stack:'s'},
-    {label:'WhatsApp/E-mail',data:[4,0,1,9,10],backgroundColor:P4,stack:'s'},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:9,usePointStyle:true}},tooltip:{mode:'index'}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},stacked:true,beginAtZero:true}}}});
+  new Chart(document.getElementById('cVendMes'),{type:'bar',data:{labels:MESES,datasets:[{label:'Graziele Silva',data:[1093104,900176,576942,377622,302326],backgroundColor:P3,borderRadius:4},{label:'Luane Sol',data:[39496,983579,38985,487154,1562308],backgroundColor:AM,borderRadius:4},{label:'Mayara Hedlund',data:[38223,354378,577309,229069,165831],backgroundColor:P1,borderRadius:4},{label:'Debora Moura',data:[180155,23744,166218,346639,59059],backgroundColor:P4,borderRadius:4},{label:'Maria Bueno',data:[111685,44662,4936,49833,104735],backgroundColor:GY,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:10,usePointStyle:true}},tooltip:{callbacks:{label:ctx=>{const v=ctx.dataset.label,i=ctx.dataIndex,ent=entradas[v]?.[i]??0,fech=fechamentos[v]?.[i]??0,tx=ent>0?((fech/ent)*100).toFixed(0)+'%':'—';return `${v}: R$${(ctx.raw/1000).toFixed(0)}K  Fechamentos: ${fech} | Entradas: ${ent} | Tx: ${tx}`;}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},ticks:{callback:v=>'R$'+(v/1000).toFixed(0)+'K'},beginAtZero:true}}}});
+  new Chart(document.getElementById('cFonte'),{type:'bar',data:{labels:MESES,datasets:[{label:'Cliente Ativo',data:[115,123,144,120,107],backgroundColor:P1,stack:'s'},{label:'SDR Artfix',data:[2,0,2,49,125],backgroundColor:GR,stack:'s'},{label:'Não Classificado',data:[48,35,8,55,7],backgroundColor:P5,stack:'s'},{label:'Parceiros',data:[1,3,6,7,2],backgroundColor:AM,stack:'s'},{label:'WhatsApp/E-mail',data:[4,0,1,9,10],backgroundColor:P4,stack:'s'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:9,usePointStyle:true}},tooltip:{mode:'index'}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},stacked:true,beginAtZero:true}}}});
   new Chart(document.getElementById('cSDR'),{type:'bar',data:{labels:MESES,datasets:[{label:'SDR',data:[2,0,2,49,125],backgroundColor:['#B0CFD9','#B0CFD9','#B0CFD9','#3D9DC0','#1B5E7B'],borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},beginAtZero:true}}}});
   new Chart(document.getElementById('cABC'),{type:'doughnut',data:{labels:['Curva A (4 clientes)','Curva B (6 clientes)','Curva C (34 clientes)'],datasets:[{data:[7105222,1285902,529385],backgroundColor:[P1,AM,GY],borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:8,usePointStyle:true,font:{size:10}}}}}});
   new Chart(document.getElementById('cABCBar'),{type:'bar',data:{labels:['Curva A','Curva B','Curva C'],datasets:[{label:'% da Receita',data:[79.7,14.4,5.9],backgroundColor:[P1,AM,GY],borderRadius:4,yAxisID:'y'},{label:'% dos Clientes',data:[9.1,13.6,77.3],backgroundColor:[P1+'33',AM+'33',GY+'55'],borderRadius:4,yAxisID:'y'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:8,usePointStyle:true,font:{size:10}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#EAF4F8'},ticks:{callback:v=>v+'%'},beginAtZero:true,max:100}}}});
   const abcData=[['BC COMUNICACAO LTDA','A',3624396,8,453049,3],['O Boticário Franchising','A',1385901,33,41997,5],['Arcos Dourados','A',1314544,166,7919,5],['Puig do Brasil','A',780381,45,17342,5],['Alstom Brasil','B',366061,7,52294,3],['Logistica Ambiental SP','B',312180,36,8672,5],['MDC4 Publicidade','B',189765,2,94883,2],['Panini Brasil','B',169671,2,84836,1],['Dior – Grupo LVMH','B',144945,4,36236,3],['Vivara','B',103280,4,25820,2],['JSL S.A.','C',100000,1,100000,1],['Fixar Digital','C',95162,3,31721,1]];
-  const abcBody=document.getElementById('abcBody');
-  abcData.forEach(([nm,abc,val,qtd,tick,mes])=>{const pill=abc==='A'?'pill-a':abc==='B'?'pill-b':'pill-c';const mesHtml=mes>=4?`<span class="pill-ok">${mes}m</span>`:`${mes}m`;abcBody.innerHTML+=`<tr><td title="${nm}">${nm}</td><td><span class="${pill}">${abc}</span></td><td>R$ ${(val/1000).toFixed(0)}K</td><td>${qtd}</td><td>R$ ${(tick/1000).toFixed(0)}K</td><td>${mesHtml}</td></tr>`;});
+  const abcBody=document.getElementById('abcBody');abcData.forEach(([nm,abc,val,qtd,tick,mes])=>{const pill=abc==='A'?'pill-a':abc==='B'?'pill-b':'pill-c';const mesHtml=mes>=4?`<span class="pill-ok">${mes}m</span>`:`${mes}m`;abcBody.innerHTML+=`<tr><td title="${nm}">${nm}</td><td><span class="${pill}">${abc}</span></td><td>R$ ${(val/1000).toFixed(0)}K</td><td>${qtd}</td><td>R$ ${(tick/1000).toFixed(0)}K</td><td>${mesHtml}</td></tr>`;});
   const heatData=[['BC Comunicação',[757976,1367320,0,0,1499100]],['O Boticário',[253689,94144,532824,291445,213800]],['Arcos Dourados',[36249,354378,559123,201361,163433]],['Puig do Brasil',[180155,24641,166218,350309,59059]],['Alstom Brasil',[0,276357,0,45015,44688]],['Logistica Ambiental',[54262,113694,35221,38498,70506]],['MDC4 Publicidade',[0,0,0,187425,2340]],['Panini Brasil',[0,0,0,169671,0]],['Dior – LVMH',[101152,40805,0,0,2988]],['Vivara',[1533,0,0,0,101747]]];
   function heatClass(v){if(v===0)return 'hc0';if(v<100000)return 'hc1';if(v<500000)return 'hc2';return 'hc3';}
-  const ht=document.getElementById('heatTbl');
-  let thead='<thead><tr><th>Cliente</th>';MESES.forEach(m=>{thead+=`<th>${m}</th>`;});thead+='<th>Total</th></tr></thead>';ht.innerHTML=thead;
+  const ht=document.getElementById('heatTbl');let thead='<thead><tr><th>Cliente</th>';MESES.forEach(m=>{thead+=`<th>${m}</th>`;});thead+='<th>Total</th></tr></thead>';ht.innerHTML=thead;
   let tbody='<tbody>';heatData.forEach(([nm,vals])=>{const tot=vals.reduce((a,b)=>a+b,0);tbody+=`<tr><td title="${nm}">${nm}</td>`;vals.forEach(v=>{const cls=heatClass(v),txt=v===0?'–':'R$'+(v/1000).toFixed(0)+'K';tbody+=`<td class="${cls}">${txt}</td>`;});tbody+=`<td style="font-weight:700;color:var(--p1)">R$${(tot/1000).toFixed(0)}K</td></tr>`;});tbody+='<tr class="ttl-row"><td>TOTAL</td>';[1462662,2406540,1364391,1490317,2196599].forEach(v=>{tbody+=`<td>R$${(v/1000).toFixed(0)}K</td>`;});tbody+='<td>R$ 8.920K</td></tr></tbody>';ht.innerHTML+=tbody;
   const mots=[['Sem Retorno do Cliente',87],['Projeto Declinado pelo Cliente',44],['Fechado com outro fornecedor',32],['Preço',25],['Proj. Declinado pela Artfix',20],['Tomada de Decisão Adiada',16],['Prazo de Entrega',12],['Outros',7]];
   const ml=document.getElementById('motivosList');mots.forEach(([n,v])=>{ml.innerHTML+=`<div class="mo-row"><span class="mo-nm">${n}</span><div class="mo-bw"><div class="mo-b" style="width:${(v/87*100).toFixed(0)}%"></div></div><span class="mo-n">${v}</span><span class="mo-p">${(v/243*100).toFixed(1)}%</span></div>`;});
   new Chart(document.getElementById('cSDRFunil'),{type:'bar',data:{labels:['Contato Qualif.','Prospecção','Reprovados','Em Negoc.','Vendidos'],datasets:[{label:'Qtd',data:[85,52,17,2,3],backgroundColor:['#B56F00','#A8D4E4','#B52828','#4C43BE','#0A7A5C'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{grid:{color:'#EAF4F8'},beginAtZero:true},y:{grid:{display:false}}}}});
 }
-window.addEventListener('DOMContentLoaded', () => { buildCharts(); window._chartsBuilt = true; });
 
 // ══════════ PIPELINE ══════════
 const PIPE_DATA=[
@@ -631,10 +752,9 @@ function setFilter(btn,type){pFilters[type]=btn.dataset.val;document.querySelect
 function filterSearch(v){pSearch=v;pipeRender();}
 let sortDirs=[1,1,-1,1,1,1,1,1];
 function sortTable(col){sortDirs[col]*=-1;pSortCol=col;pSortDir=sortDirs[col];document.querySelectorAll('thead th').forEach((th,i)=>{th.classList.remove('sort-asc','sort-desc');if(i===col)th.classList.add(pSortDir===1?'sort-asc':'sort-desc');});pipeRender();}
-pipeRender();
 
 // ══════════ PLANO DE AÇÃO ══════════
-let PA_DATA = [
+let PA_DATA=[
   {id:1,enc:"Criar o fluxo da Engenharia - Marcar reunião com André, Fábio e Sol",proj:"Engenharia",resp:"Bárbara e Sol",prazo:"Abr/2026",status:2,obs:"Fluxo criado",pct:100},
   {id:2,enc:"Criar 2 arquivos padrões: briefing e proposta",proj:"Engenharia",resp:"Sol",prazo:"Mai/2026",status:1,obs:"Aguardando resolução do fluxo",pct:40},
   {id:3,enc:"Repassar rotina de análise de cadastro de cliente para Comercial",proj:"Fluxo Comercial",resp:"Bruno",prazo:"A definir",status:0,obs:"Bruno alinhando com Katy",pct:0},
@@ -651,155 +771,50 @@ let PA_DATA = [
   {id:14,enc:"Rodar NPS em clientes novos por projeto",proj:"Fluxo Comercial",resp:"Sol",prazo:"Jul/2026",status:0,obs:"",pct:0},
   {id:15,enc:"Alinhar Sol e André sobre fluxo de consulta técnica e critérios de entrada na Engenharia",proj:"Engenharia",resp:"Sol / André",prazo:"Jun/2026",status:1,obs:"Sol montando materiais com André",pct:60},
 ];
-let PA_NEXT_ID = 16;
-let paStatusFilter = 'all';
-let paProjFilter = 'all';
+let PA_NEXT_ID=16,paStatusFilter='all';
 function projPillClass(p){const m={'Engenharia':'proj-eng','Fluxo Comercial':'proj-com','SDR':'proj-sdr','Site/SEO':'proj-site','Relacionamento':'proj-rel'};return m[p]||'proj-out';}
-function statusLabel(s){return s===2?'✅ Concluído':s===1?'🔄 Em andamento':'⏳ Pendente';}
 function statusClass(s){return s===2?'s-2':s===1?'s-1':'s-0';}
 function paStats(){
   const total=PA_DATA.length,conc=PA_DATA.filter(r=>r.status===2).length,and=PA_DATA.filter(r=>r.status===1).length,pend=PA_DATA.filter(r=>r.status===0).length;
-  document.getElementById('paStats').innerHTML=`
-    <div class="pa-stat s-total"><div class="pa-stat-n">${total}</div><div class="pa-stat-lbl">Total de ações</div></div>
-    <div class="pa-stat s-conc"><div class="pa-stat-n" style="color:var(--green)">${conc}</div><div class="pa-stat-lbl">Concluídas</div></div>
-    <div class="pa-stat s-and"><div class="pa-stat-n" style="color:var(--amber)">${and}</div><div class="pa-stat-lbl">Em andamento</div></div>
-    <div class="pa-stat s-pend"><div class="pa-stat-n" style="color:var(--red)">${pend}</div><div class="pa-stat-lbl">Pendentes</div></div>
-  `;
+  document.getElementById('paStats').innerHTML=`<div class="pa-stat s-total"><div class="pa-stat-n">${total}</div><div class="pa-stat-lbl">Total de ações</div></div><div class="pa-stat s-conc"><div class="pa-stat-n" style="color:var(--green)">${conc}</div><div class="pa-stat-lbl">Concluídas</div></div><div class="pa-stat s-and"><div class="pa-stat-n" style="color:var(--amber)">${and}</div><div class="pa-stat-lbl">Em andamento</div></div><div class="pa-stat s-pend"><div class="pa-stat-n" style="color:var(--red)">${pend}</div><div class="pa-stat-lbl">Pendentes</div></div>`;
 }
 function paRender(){
   const search=document.getElementById('paSearchInput').value.toLowerCase();
   const projSel=document.getElementById('paProjSel').value;
-  let rows=PA_DATA.filter(r=>{
-    if(paStatusFilter!=='all'&&r.status!==parseInt(paStatusFilter))return false;
-    if(projSel!=='all'&&r.proj!==projSel)return false;
-    if(search&&!r.enc.toLowerCase().includes(search)&&!r.resp.toLowerCase().includes(search))return false;
-    return true;
-  });
+  let rows=PA_DATA.filter(r=>{if(paStatusFilter!=='all'&&r.status!==parseInt(paStatusFilter))return false;if(projSel!=='all'&&r.proj!==projSel)return false;if(search&&!r.enc.toLowerCase().includes(search)&&!r.resp.toLowerCase().includes(search))return false;return true;});
   const tbody=document.getElementById('paTbody');
-  if(rows.length===0){tbody.innerHTML=`<tr><td colspan="8" class="empty">Nenhuma ação encontrada.</td></tr>`;return;}
+  if(rows.length===0){tbody.innerHTML=`<tr><td colspan="8" class="empty">Nenhuma ação encontrada.</td></tr>`;paStats();return;}
   let html='';
-  rows.forEach((r,i)=>{
-    const pct=r.pct||0;
-    const fillColor=r.status===2?'var(--green)':r.status===1?'var(--amber)':'var(--red)';
-    html+=`<tr>
-      <td style="color:var(--t3);font-size:11px;font-weight:700;">${r.id}</td>
-      <td class="enc">${r.enc}</td>
-      <td class="proj-tag"><span class="proj-pill ${projPillClass(r.proj)}">${r.proj}</span></td>
-      <td style="font-size:11.5px;color:var(--t2);">${r.resp}</td>
-      <td style="font-size:11.5px;color:var(--t2);white-space:nowrap;">${r.prazo}</td>
-      <td>
-        <select class="status-sel ${statusClass(r.status)}" onchange="paChangeStatus(${r.id},parseInt(this.value));this.className='status-sel '+['s-0','s-1','s-2'][parseInt(this.value)];">
-          <option value="0" ${r.status===0?'selected':''}>⏳ Pendente</option>
-          <option value="1" ${r.status===1?'selected':''}>🔄 Em andamento</option>
-          <option value="2" ${r.status===2?'selected':''}>✅ Concluído</option>
-        </select>
-      </td>
-      <td>
-        <div class="pa-prog-wrap">
-          <div class="pa-prog-bar"><div class="pa-prog-fill" style="width:${pct}%;background:${fillColor}"></div></div>
-          <span style="font-size:11px;font-weight:700;color:var(--t2);width:30px;text-align:right;">${pct}%</span>
-        </div>
-        <input class="pa-obs-input" style="margin-top:4px;" value="${r.obs}" placeholder="Observação..." onblur="paChangeObs(${r.id},this.value)">
-      </td>
-      <td><button class="delete-btn" onclick="paDelete(${r.id})" title="Remover">✕</button></td>
-    </tr>`;
+  rows.forEach(r=>{
+    const pct=r.pct||0;const fillColor=r.status===2?'var(--green)':r.status===1?'var(--amber)':'var(--red)';
+    html+=`<tr><td style="color:var(--t3);font-size:11px;font-weight:700;">${r.id}</td><td class="enc">${r.enc}</td><td class="proj-tag"><span class="proj-pill ${projPillClass(r.proj)}">${r.proj}</span></td><td style="font-size:11.5px;color:var(--t2);">${r.resp}</td><td style="font-size:11.5px;color:var(--t2);white-space:nowrap;">${r.prazo}</td><td><select class="status-sel ${statusClass(r.status)}" onchange="paChangeStatus(${r.id},parseInt(this.value));this.className='status-sel '+['s-0','s-1','s-2'][parseInt(this.value)];"><option value="0" ${r.status===0?'selected':''}>⏳ Pendente</option><option value="1" ${r.status===1?'selected':''}>🔄 Em andamento</option><option value="2" ${r.status===2?'selected':''}>✅ Concluído</option></select></td><td><div class="pa-prog-wrap"><div class="pa-prog-bar"><div class="pa-prog-fill" style="width:${pct}%;background:${fillColor}"></div></div><span style="font-size:11px;font-weight:700;color:var(--t2);width:30px;text-align:right;">${pct}%</span></div><input class="pa-obs-input" style="margin-top:4px;" value="${r.obs}" placeholder="Observação..." onblur="paChangeObs(${r.id},this.value)"></td><td><button class="delete-btn" onclick="paDelete(${r.id})" title="Remover">✕</button></td></tr>`;
   });
-  tbody.innerHTML=html;
-  paStats();
+  tbody.innerHTML=html;paStats();
 }
 function paChangeStatus(id,val){const r=PA_DATA.find(x=>x.id===id);if(r){r.status=val;if(val===2&&r.pct<100)r.pct=100;paRender();}}
 function paChangeObs(id,val){const r=PA_DATA.find(x=>x.id===id);if(r)r.obs=val;}
 function paDelete(id){if(confirm('Remover esta ação?')){PA_DATA=PA_DATA.filter(x=>x.id!==id);paRender();}}
 function paFilter(btn,val){paStatusFilter=val;document.querySelectorAll('.pa-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');paRender();}
-function paAdd(){
-  const enc=prompt('Encaminhamento (descrição da ação):');if(!enc)return;
-  const proj=prompt('Projeto (Engenharia / Fluxo Comercial / SDR / Site/SEO / Relacionamento):','Fluxo Comercial')||'Fluxo Comercial';
-  const resp=prompt('Responsável:','')||'';
-  const prazo=prompt('Prazo:','A definir')||'A definir';
-  PA_DATA.push({id:PA_NEXT_ID++,enc,proj,resp,prazo,status:0,obs:'',pct:0});
-  paRender();
-}
-paRender();
+function paAdd(){const enc=prompt('Encaminhamento:');if(!enc)return;const proj=prompt('Projeto (Engenharia / Fluxo Comercial / SDR / Site/SEO / Relacionamento):','Fluxo Comercial')||'Fluxo Comercial';const resp=prompt('Responsável:','')||'';const prazo=prompt('Prazo:','A definir')||'A definir';PA_DATA.push({id:PA_NEXT_ID++,enc,proj,resp,prazo,status:0,obs:'',pct:0});paRender();}
 
 // ══════════ FLUXOS ══════════
-window._flowsBuilt = false;
-const FLOW_DATA = {
-  inbound: [
-    {owner:'COMERCIAL · ANALISTA',name:'ANÁLISE DO LEAD',sla:'SLA: contínuo',body:'Origem do lead (site, WhatsApp, e-mail, telefone ou indicação). Triagem inicial: segmento, tipo de demanda, potencial do projeto. Validação cadastral e classificação no CRM.'},
-    {owner:'COMERCIAL · ANALISTA',name:'DIAGNÓSTICO COMERCIAL',sla:'SLA: até 24h',body:'Analista conduz reunião e/ou ligação com cliente. Comercial gera briefing com informações necessárias. Cria tarefa no CRM para Eng/Proposta.'},
-    {owner:'ENGENHARIA / PROPOSTA',name:'PROJETO & ORÇAMENTO',sla:'SLA: + 24h',body:'Eng/Proposta recebe no funil CRM. Destrincha especificações técnicas. Orçamentista precifica (materiais + mão de obra). Dúvidas aciona comercial.'},
-    {owner:'COMERCIAL · ANALISTA',name:'ELABORAÇÃO E ENVIO DE PROPOSTA',sla:'SLA: contínuo',body:'Analista formata proposta comercial. Proposta enviada e registrada no CRM.'},
-    {owner:'COMERCIAL · ANALISTA',name:'NEGOCIAÇÃO & FOLLOW-UP',sla:'SLA: contínuo',body:'Analista faz follow-up ativo. Solicita revisão da proposta se necessário. Em caso de desconto excepcional: análise do time de Proposta e aprovação da Gestão (Marcos).'},
-    {owner:'FINANCEIRO / PCP',name:'FECHAMENTO & CONTRATO',sla:'',body:'Cliente aceita a proposta. Comercial abre tarefa para abertura de OP no CRM. PCP recebe OS e inicia produção. Financeiro emite NF ao fim da produção.'},
-  ],
-  outbound: [
-    {owner:'COMERCIAL · SDR',name:'MAPEAMENTO E ABORDAGEM',sla:'SLA: contínuo',body:'Pesquisa e identificação de decisores: telefone, e-mail, LinkedIn, rede de relacionamento, ferramentas de inteligência comercial, carteira de clientes Artfix.'},
-    {owner:'COMERCIAL · SDR',name:'QUALIFICAÇÃO DO LEAD',sla:'SLA: contínuo',body:'Existência de demanda potencial. Momento do cliente. Tipo de projeto possível. Aderência ao portfólio da Artfix.'},
-    {owner:'SDR + ANALISTA',name:'DIAGNÓSTICO COMERCIAL',sla:'SLA: até 24h',body:'Analista conduz reunião e/ou ligação com cliente. Comercial preenche o briefing. Validação cadastral se novo cliente. Cria tarefa no CRM para Eng/Proposta.'},
-    {owner:'ENGENHARIA / PROPOSTA',name:'PROJETO & ORÇAMENTO',sla:'SLA: + 24h',body:'Eng/Proposta recebe no funil CRM. Destrincha especificações técnicas. Orçamentista precifica (materiais + mão de obra).'},
-    {owner:'COMERCIAL · ANALISTA',name:'ELABORAÇÃO E ENVIO DE PROPOSTA',sla:'SLA: contínuo',body:'Analista formata proposta comercial. Proposta enviada e registrada no CRM.'},
-    {owner:'COMERCIAL · ANALISTA',name:'NEGOCIAÇÃO & FOLLOW-UP',sla:'SLA: contínuo',body:'Analista faz follow-up ativo. Revisão técnica se necessário. Desconto excepcional requer aprovação da Gestão (Marcos).'},
-    {owner:'FINANCEIRO / PCP',name:'FECHAMENTO & CONTRATO',sla:'',body:'Cliente aceita a proposta. Comercial abre OP no CRM. PCP inicia produção. Financeiro emite NF.'},
-  ],
-  eng: [
-    {owner:'ENGENHARIA / PROPOSTA',name:'RECEBER O BRIEFING',sla:'SLA: contínuo',body:'Formato padrão de briefing (em desenvolvimento pelo Comercial). Pode retornar a esta etapa durante negociação com o cliente.'},
-    {owner:'ENGENHARIA / PROPOSTA',name:'CONSULTA TÉCNICA',sla:'SLA: até 2h',body:'Time de Engenharia revisa e analisa o projeto. Criticidade por viés técnico. Subsidia o time que irá precificar. Definir critérios de passagem por consulta técnica.'},
-    {owner:'PROPOSTA',name:'DESENVOLVIMENTO DO PROJETO',sla:'SLA: até 4h',body:'Desenvolver o projeto com especificações técnicas. Criar tarefa e enviar para o Comercial via CRM. Orçamentista executa a precificação. Marcos valida. Cronograma nasce aqui com aval do PPCP.'},
-    {owner:'ENGENHARIA / PROPOSTA',name:'REVISÃO DO BRIEFING',sla:'SLA: até 4h',body:'Após negociação aprovada, briefing deve ser revisado pelo time de Projetos (somente para Projetos Especiais). Criar lista de pendências no arquivo.'},
-    {owner:'ENGENHARIA / PROPOSTA',name:'DESENVOLVIMENTO DA LISTA DE MATERIAIS',sla:'SLA: até 24h',body:'Detalhar o projeto com a lista de materiais. Analista de Materiais analisa com base no estoque. Informações para o PPCP: tipos de provas, prazo de entrega da amostra e da campanha.'},
-    {owner:'ENGENHARIA/PROPOSTA & PPCP',name:'ENTRADA NO PPCP',sla:'SLA: até 24h',body:'Analista aloca negócio na etapa "Abertura de OP" com tarefa para o PPCP, contendo data e horário de acordo com o cronograma enviado ao cliente.'},
-    {owner:'PPCP',name:'ABRIR ORDEM DE PRODUÇÃO',sla:'',body:'Após lista de materiais pronta, card alocado para etapa "Abertura de OP". A partir disso, abre Ordem de Compra e para Produção. Lucas está desenvolvendo automação dos fluxos a partir do PPCP.'},
-  ],
+window._flowsBuilt=false;
+const FLOW_DATA={
+  inbound:[{owner:'COMERCIAL · ANALISTA',name:'ANÁLISE DO LEAD',sla:'SLA: contínuo',body:'Origem do lead (site, WhatsApp, e-mail, telefone ou indicação). Triagem inicial: segmento, tipo de demanda, potencial do projeto. Validação cadastral e classificação no CRM.'},{owner:'COMERCIAL · ANALISTA',name:'DIAGNÓSTICO COMERCIAL',sla:'SLA: até 24h',body:'Analista conduz reunião e/ou ligação com cliente. Comercial gera briefing com informações necessárias. Cria tarefa no CRM para Eng/Proposta.'},{owner:'ENGENHARIA / PROPOSTA',name:'PROJETO & ORÇAMENTO',sla:'SLA: + 24h',body:'Eng/Proposta recebe no funil CRM. Destrincha especificações técnicas. Orçamentista precifica (materiais + mão de obra). Dúvidas aciona comercial.'},{owner:'COMERCIAL · ANALISTA',name:'ELABORAÇÃO E ENVIO DE PROPOSTA',sla:'SLA: contínuo',body:'Analista formata proposta comercial. Proposta enviada e registrada no CRM.'},{owner:'COMERCIAL · ANALISTA',name:'NEGOCIAÇÃO & FOLLOW-UP',sla:'SLA: contínuo',body:'Analista faz follow-up ativo. Solicita revisão da proposta se necessário. Em caso de desconto excepcional: análise do time de Proposta e aprovação da Gestão (Marcos).'},{owner:'FINANCEIRO / PCP',name:'FECHAMENTO & CONTRATO',sla:'',body:'Cliente aceita a proposta. Comercial abre tarefa para abertura de OP no CRM. PCP recebe OS e inicia produção. Financeiro emite NF ao fim da produção.'}],
+  outbound:[{owner:'COMERCIAL · SDR',name:'MAPEAMENTO E ABORDAGEM',sla:'SLA: contínuo',body:'Pesquisa e identificação de decisores: telefone, e-mail, LinkedIn, rede de relacionamento, ferramentas de inteligência comercial, carteira de clientes Artfix.'},{owner:'COMERCIAL · SDR',name:'QUALIFICAÇÃO DO LEAD',sla:'SLA: contínuo',body:'Existência de demanda potencial. Momento do cliente. Tipo de projeto possível. Aderência ao portfólio da Artfix.'},{owner:'SDR + ANALISTA',name:'DIAGNÓSTICO COMERCIAL',sla:'SLA: até 24h',body:'Analista conduz reunião e/ou ligação com cliente. Comercial preenche o briefing. Validação cadastral se novo cliente. Cria tarefa no CRM para Eng/Proposta.'},{owner:'ENGENHARIA / PROPOSTA',name:'PROJETO & ORÇAMENTO',sla:'SLA: + 24h',body:'Eng/Proposta recebe no funil CRM. Destrincha especificações técnicas. Orçamentista precifica (materiais + mão de obra).'},{owner:'COMERCIAL · ANALISTA',name:'ELABORAÇÃO E ENVIO DE PROPOSTA',sla:'SLA: contínuo',body:'Analista formata proposta comercial. Proposta enviada e registrada no CRM.'},{owner:'COMERCIAL · ANALISTA',name:'NEGOCIAÇÃO & FOLLOW-UP',sla:'SLA: contínuo',body:'Analista faz follow-up ativo. Revisão técnica se necessário. Desconto excepcional requer aprovação da Gestão (Marcos).'},{owner:'FINANCEIRO / PCP',name:'FECHAMENTO & CONTRATO',sla:'',body:'Cliente aceita a proposta. Comercial abre OP no CRM. PCP inicia produção. Financeiro emite NF.'}],
+  eng:[{owner:'ENGENHARIA / PROPOSTA',name:'RECEBER O BRIEFING',sla:'SLA: contínuo',body:'Formato padrão de briefing (em desenvolvimento pelo Comercial). Pode retornar a esta etapa durante negociação com o cliente.'},{owner:'ENGENHARIA / PROPOSTA',name:'CONSULTA TÉCNICA',sla:'SLA: até 2h',body:'Time de Engenharia revisa e analisa o projeto. Criticidade por viés técnico. Subsidia o time que irá precificar. Definir critérios de passagem por consulta técnica.'},{owner:'PROPOSTA',name:'DESENVOLVIMENTO DO PROJETO',sla:'SLA: até 4h',body:'Desenvolver o projeto com especificações técnicas. Criar tarefa e enviar para o Comercial via CRM. Orçamentista executa a precificação. Marcos valida.'},{owner:'ENGENHARIA / PROPOSTA',name:'REVISÃO DO BRIEFING',sla:'SLA: até 4h',body:'Após negociação aprovada, briefing deve ser revisado pelo time de Projetos (somente para Projetos Especiais). Criar lista de pendências no arquivo.'},{owner:'ENGENHARIA / PROPOSTA',name:'LISTA DE MATERIAIS',sla:'SLA: até 24h',body:'Detalhar o projeto com a lista de materiais. Analista de Materiais analisa com base no estoque. Informações para o PPCP: tipos de provas, prazo de entrega.'},{owner:'ENGENHARIA/PROPOSTA & PPCP',name:'ENTRADA NO PPCP',sla:'SLA: até 24h',body:'Analista aloca negócio na etapa "Abertura de OP" com tarefa para o PPCP, contendo data e horário de acordo com o cronograma enviado ao cliente.'},{owner:'PPCP',name:'ABRIR ORDEM DE PRODUÇÃO',sla:'',body:'Após lista de materiais pronta, card alocado para etapa "Abertura de OP". A partir disso, abre Ordem de Compra e para Produção.'}],
 };
-let flowState = JSON.parse(JSON.stringify(FLOW_DATA));
-function buildFlows(){
-  ['inbound','outbound','eng'].forEach(key=>{
-    const container=document.getElementById('steps-'+key);
-    container.innerHTML='';
-    flowState[key].forEach((step,i)=>{
-      if(i>0){
-        const arrow=document.createElement('div');arrow.className='flow-arrow';arrow.innerHTML='<span class="flow-arrow-icon">▶</span>';container.appendChild(arrow);
-      }
-      const stepEl=document.createElement('div');stepEl.className='flow-step';
-      stepEl.innerHTML=`<div class="flow-step-inner">
-        <div class="flow-step-owner">${step.owner}</div>
-        <div class="flow-step-name">${step.name}</div>
-        ${step.sla?`<div class="flow-step-sla">${step.sla}</div>`:''}
-        <div class="flow-step-body">${step.body}</div>
-        <button class="flow-step-edit-btn" onclick="openModal('${key}',${i})" title="Editar">✏️</button>
-      </div>`;
-      container.appendChild(stepEl);
-    });
-  });
-}
+let flowState=JSON.parse(JSON.stringify(FLOW_DATA));
+function buildFlows(){['inbound','outbound','eng'].forEach(key=>{const container=document.getElementById('steps-'+key);container.innerHTML='';flowState[key].forEach((step,i)=>{if(i>0){const arrow=document.createElement('div');arrow.className='flow-arrow';arrow.innerHTML='<span class="flow-arrow-icon">▶</span>';container.appendChild(arrow);}const stepEl=document.createElement('div');stepEl.className='flow-step';stepEl.innerHTML=`<div class="flow-step-inner"><div class="flow-step-owner">${step.owner}</div><div class="flow-step-name">${step.name}</div>${step.sla?`<div class="flow-step-sla">${step.sla}</div>`:''}<div class="flow-step-body">${step.body}</div><button class="flow-step-edit-btn" onclick="openModal('${key}',${i})" title="Editar">✏️</button></div>`;container.appendChild(stepEl);});});}
 let _modalKey=null,_modalIdx=null;
-function openModal(key,idx){
-  _modalKey=key;_modalIdx=idx;
-  const s=flowState[key][idx];
-  document.getElementById('modalOwner').value=s.owner;
-  document.getElementById('modalName').value=s.name;
-  document.getElementById('modalSla').value=s.sla;
-  document.getElementById('modalBody').value=s.body;
-  document.getElementById('stepModal').classList.add('open');
-}
+function openModal(key,idx){_modalKey=key;_modalIdx=idx;const s=flowState[key][idx];document.getElementById('modalOwner').value=s.owner;document.getElementById('modalName').value=s.name;document.getElementById('modalSla').value=s.sla;document.getElementById('modalBody').value=s.body;document.getElementById('stepModal').classList.add('open');}
 function closeModal(){document.getElementById('stepModal').classList.remove('open');_modalKey=null;_modalIdx=null;}
-function saveModal(){
-  if(_modalKey===null)return;
-  flowState[_modalKey][_modalIdx]={
-    owner:document.getElementById('modalOwner').value,
-    name:document.getElementById('modalName').value,
-    sla:document.getElementById('modalSla').value,
-    body:document.getElementById('modalBody').value,
-  };
-  buildFlows();closeModal();
-}
+function saveModal(){if(_modalKey===null)return;flowState[_modalKey][_modalIdx]={owner:document.getElementById('modalOwner').value,name:document.getElementById('modalName').value,sla:document.getElementById('modalSla').value,body:document.getElementById('modalBody').value};buildFlows();closeModal();}
 document.getElementById('stepModal').addEventListener('click',e=>{if(e.target===document.getElementById('stepModal'))closeModal();});
-function switchFlow(name){
-  document.querySelectorAll('.flow-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.flow-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('flow-'+name).classList.add('active');
-  event.target.classList.add('active');
-}
+function switchFlow(name){document.querySelectorAll('.flow-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.flow-tab').forEach(t=>t.classList.remove('active'));document.getElementById('flow-'+name).classList.add('active');event.target.classList.add('active');}
+
+// ══════════ BOOT ══════════
+checkAuth();
 </script>
 </body>
 </html>
