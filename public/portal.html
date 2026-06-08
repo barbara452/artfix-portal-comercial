@@ -489,26 +489,30 @@ function parseCSV(text){
 }
 function colMap(headers){
   const map={};
+  // Debug: log headers so user can see them in console
+  console.log('[Artfix Import] Cabeçalhos detectados:', headers);
   const patterns={
-    nome:[/nome.*neg|t.tulo.*neg|deal.*name|negocio/i],
-    empresa:[/empresa|company|cliente/i],
-    valor:[/valor|value|montante|amount/i],
-    etapa:[/etapa|fase|stage|funil/i],
-    resp:[/respons.vel|owner|dono|vendedor/i],
-    produto:[/produto|product|servico|categoria/i],
-    fonte:[/origem|fonte|source/i],
-    fechamento:[/fechamento|close.*date|previsao/i],
-    status:[/status|situacao/i],
-    mes:[/m.s.*fechamento|month|competencia/i]
+    nome:[/nome.*neg|t[ií]tulo.*neg|deal.*name|negocio|neg[oó]cio|oportunidade|titulo/i],
+    empresa:[/empresa|companhia|company|cliente|conta|organiza/i],
+    valor:[/valor|value|montante|amount|pre[cç]o|total/i],
+    etapa:[/etapa|fase|stage|funil|pipeline|est[aá]gio/i],
+    resp:[/respons[aá]vel|owner|dono|vendedor|usu[aá]rio.*respons|atribu[ií]do/i],
+    produto:[/produto|product|servi[cç]o|categoria|tipo.*neg|segmento/i],
+    fonte:[/origem|fonte|source|canal|como.*conheceu|campanha/i],
+    fechamento:[/fechamento|close.*date|previs[aã]o|data.*prev|conclus[aã]o|encerramento/i],
+    status:[/status|situa[cç][aã]o|estado|resultado/i],
+    mes:[/m[eê]s.*fech|month|compet[eê]ncia/i]
   };
   headers.forEach((h,i)=>{
-    const hn=h.toLowerCase().trim();
+    const hn=h.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
     Object.entries(patterns).forEach(([key,pats])=>{
       if(map[key]===undefined && pats.some(p=>p.test(hn))) map[key]=i;
     });
   });
+  console.log('[Artfix Import] Mapeamento de colunas:', map);
   return map;
 }
+
 function processDashboardData(rows, filename){
   const headers = rows[0];
   const data = rows.slice(1).filter(r=>r.some(c=>c.trim()));
@@ -746,12 +750,16 @@ function processDashboardData(rows, filename){
 
   const totalRows=data.length;
   const warnCols=Object.values(cm).filter(v=>v!==undefined).length;
-  const msg='<strong>'+totalRows.toLocaleString('pt-BR')+' registros importados</strong>'+
-    (warnCols<3?' <br><small>Atenção: apenas '+warnCols+' coluna(s) reconhecida(s). Verifique os cabeçalhos do CSV.</small>':'');
+    const totalRows=data.length;
+  const warnCols=Object.values(cm).filter(v=>v!==undefined).length;
+  let msg='<b>'+totalRows.toLocaleString('pt-BR')+' registros importados</b>';
+  if(warnCols<3) msg+='<br><small style="color:#c00">Atenção: apenas '+warnCols+' coluna(s) reconhecida(s). Abra o console (F12) para ver os cabeçalhos detectados.</small>';
   return {ok:true, msg, total:totalRows};
 }
+}
 
-function showImportResult(type,msg){const el=document.getElementById('importResult');el.className='import-result '+type;el.textContent=msg;el.style.display='block';}
+function showImportResult(type,msg){const el=document.getElementById('importResult');el.className='import-result '+type;el.innerHTML=msg;el.style.display='block';}
+
 function initPortal(){if(!window._inited){window._inited=true;buildCharts();pipeRender();paRender();}}
 function switchTab(name){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');event.target.closest('.tab').classList.add('active');if(name==='fluxos'&&!window._flowsBuilt){buildFlows();window._flowsBuilt=true;}}
 </script><script>
